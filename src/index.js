@@ -10,7 +10,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 ReactDOM.render(
   <React.StrictMode>
-    <BrowserRouter basename="/reselect-practice-1/">
+    <BrowserRouter basename="/normalize-react-1/">
       <Provider store={store}>
         <App />
       </Provider>
