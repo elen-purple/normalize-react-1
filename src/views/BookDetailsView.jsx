@@ -1,23 +1,32 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useParams, useLocation, Link } from 'react-router-dom';
 import PageHeading from '../components/PageHeading/PageHeading';
-import * as bookShelfAPI from '../services/bookshelf-api';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectByIdBook } from 'redux/books/booksSelectors';
+import { booksOperations } from 'redux/books';
+import { fetchAuthors } from 'redux/authors/authorsOperations';
+import { selectByIdAuthor } from 'redux/authors/authorsSelectors';
 
 export default function BookDetailsView() {
   const location = useLocation();
   const { slug } = useParams();
-  const bookId = slug.match(/[a-z0-9]+$/)[0];
-  const [book, setBook] = useState(null);
-  const [author, setAuthor] = useState(null);
+  let bookId = '';
+  const dispatch = useDispatch();
+  const book = useSelector(state =>
+    selectByIdBook(state, location?.state?.from?.id),
+  );
 
-  useEffect(async () => {
-    if (location?.state?.from?.id) {
-      await bookShelfAPI.fetchBookById(location?.state?.from?.id).then(setBook);
-      if (book?.authorId) {
-        await bookShelfAPI.fetchAuthorById().then(setAuthor);
-      }
-    }
-  }, [bookId]);
+  if (book) {
+    bookId = book.authorId;
+  }
+
+  const author = useSelector(state => selectByIdAuthor(state, bookId));
+
+  useEffect(() => {
+    dispatch(fetchAuthors());
+    dispatch(booksOperations.fetchBooks());
+  }, [dispatch]);
+
   return (
     <>
       <PageHeading text={`Книга ${slug}`} />

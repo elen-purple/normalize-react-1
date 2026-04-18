@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { booksOperations, booksSelectors } from 'redux/books';
 import PageHeading from 'components/PageHeading/PageHeading';
 import { Filter } from 'components/Filter/Filter';
+import { fetchAuthors } from 'redux/authors/authorsOperations';
 
 const makeSlug = string => slugify(string, { lower: true });
 
@@ -14,7 +15,10 @@ export default function BooksView() {
   const dispatch = useDispatch();
   const books = useSelector(booksSelectors.selectFilteredBooks);
 
-  useEffect(() => dispatch(booksOperations.fetchBooks()), [dispatch]);
+  useEffect(() => {
+    dispatch(fetchAuthors());
+    dispatch(booksOperations.fetchBooks());
+  }, [dispatch]);
 
   return (
     <>
@@ -22,21 +26,21 @@ export default function BooksView() {
       <Filter />
       {books.length > 0 && (
         <ul>
-          {books.map(book => (
-            <li key={book.id}>
+          {books.map(({ id, title }) => (
+            <li key={id}>
               <Link
                 to={{
-                  pathname: `${url}/${makeSlug(`${book.title} ${book.id}`)}`,
+                  pathname: `${url}/${makeSlug(`${title} ${id}`)}`,
                   state: {
                     from: {
                       location,
                       label: 'Назад до всіх книг',
-                      id: book.id,
+                      id: id,
                     },
                   },
                 }}
               >
-                {book.title}
+                {title}
               </Link>
             </li>
           ))}

@@ -1,10 +1,14 @@
 import { selectFilter } from 'redux/filter/filterSelector';
 import { createSelector } from 'reselect';
+import { booksAdapter } from './booksSlice';
 
-export const selectBooks = state => state.books.entities;
+export const {
+  selectAll: selectAllBooks,
+  selectById: selectByIdBook,
+} = booksAdapter.getSelectors(state => state.books);
 
 export const selectFilteredBooks = createSelector(
-  [selectBooks, selectFilter],
+  [selectAllBooks, selectFilter],
   (books, filter) => {
     console.log();
     return books.filter(({ title }) =>

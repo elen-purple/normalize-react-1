@@ -3,12 +3,12 @@ import axios from 'axios';
 
 axios.defaults.baseURL = 'https://69d0ebf090cd06523d5da5a9.mockapi.io/';
 
-export const fetchBooks = createAsyncThunk(
-  'books/fetchBooks',
+export const fetchAuthors = createAsyncThunk(
+  'authors/fetchAuthors',
   async (_, { rejectWithValue }) => {
     try {
-      const books = await axios.get('/books');
-      return books.data;
+      const authors = await axios.get(`/authors`);
+      return authors.data;
     } catch (error) {
       return rejectWithValue(error);
     }
